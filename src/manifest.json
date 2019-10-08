@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Wheel it turn ?",
+  "version": "0.1",
+  "description": "Turn the wheel !",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "Turn the wheel !"
+  }
+}

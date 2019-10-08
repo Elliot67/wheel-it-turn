@@ -1,0 +1,46 @@
+body {
+    background-color: #e9e9e9;
+    height: 400px;
+    width: 250px;
+    margin: 0;
+}
+
+#footersvg {
+    position: absolute;
+    bottom: 0;
+    transform: translateZ(0);
+    fill: #7189f0;
+    z-index: 5;
+}
+
+footer {
+    position: absolute;
+    bottom: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    z-index: 20;
+}
+
+footer>* {
+    margin: 2px;
+}
+
+footer a {
+    color: black;
+    display: flex;
+}
+
+footer a p {
+    margin: 0;
+}
+
+footer a img {
+    height: 15px;
+    margin-right: 5px;
+}
+
+#heart {
+    color: #e25555;
+}
