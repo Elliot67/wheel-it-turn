@@ -1,56 +1,86 @@
 body {
     background-color: #e9e9e9;
-    height: 550px;
-    width: 400px;
+    height: 450px;
+    width: 350px;
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
     display: flex;
 }
 
-/* Rooting */
+/* MAIN */
 
-body.intro #tabs, body.intro #main {
-    display: none;
-}
-
-body.tabs #intro, body.tabs #main {
-    display: none;
-}
-
-body.main #tabs, body.main #intro {
-    display: none;
-}
-
-/* Intro */
-
-header h1 {
-    text-align: center;
-}
-
-/* TabSection */
-
-#tabs {
-    height: 460px;
-    width: 310px;
+.main {
+    height: 380px;
+    width: 280px;
     margin: auto;
     background-color: white;
     border-radius: 15px;
-    padding: 20px;
+    padding: 15px;
     overflow: auto;
 }
 
-#tabs::-webkit-scrollbar {
+.main::-webkit-scrollbar {
     width: 8px;
     background-color: #d0d0d0;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
 }
 
-#tabs::-webkit-scrollbar-thumb {
+.main::-webkit-scrollbar-thumb {
     background: #828282;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
 }
+
+/* Rooting */
+
+body.intro #tabs, body.intro #app {
+    display: none;
+}
+
+body.tabs #intro, body.tabs #app {
+    display: none;
+}
+
+body.app #intro, body.app #tabs {
+    display: none;
+}
+
+/*========================= MODULES =========================*/
+
+/* Navbar */
+
+.nav {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.nav .navTitle {
+    font-size: 20px;
+    text-align: center;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.nav .navArrow {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 23px;
+    cursor: pointer;
+}
+
+.nav .navArrow path {
+    pointer-events: none;
+}
+
+/*========================= INTRO =========================*/
+
+#intro {
+    background-color: red;
+}
+
+/*========================= TABS =========================*/
 
 .tabContainer {
     display: flex;
@@ -72,11 +102,10 @@ header h1 {
     background-color: #daddfa;
 }
 
-/* MAIN */
+/*========================= APP =========================*/
 
-main {
+.app {
     position: relative;
-    overflow: hidden;
 }
 
 #winner {
@@ -90,48 +119,62 @@ main {
     transition-duration: 0.5s;
 }
 
-/* Wheel */
-
 #wheel {
-    height: 250px;
-    background-color: #d6cab2;
-    border-top: solid var(--border-color) 1px;
+    height: 230px;
+    width: 230px;
+    border-radius: 50%;
+    margin: auto;
+    background: conic-gradient(red 20%, blue 20%, blue 40%, purple 40%, purple 60%, pink 60%, pink 90%, orange 90%);
+    margin-bottom: 20px;
 }
-
-/* ItemSection */
 
 #items {
     display: flex;
     flex-wrap: wrap;
-    padding: 8px;
-    background-color: #dadada;
 }
 
 #items .itemElement {
-    background-color: #e28a8a;
-    padding: 6px;
-    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 6px 10px;
+    background-color: #dadada;
 }
 
-#items .itemElement div {
+#items .itemElement:nth-child(2n) {
+    background-color: #c8c8c8;
+}
+
+#items .itemElement .itemElementColor {
+    height: 100%;
+    width: 15px;
+    background-color: purple;
+    margin-right: 5px;
+}
+
+#items .itemElement .itemElementText {
     display: inline-block;
+    vertical-align: middle;
+    padding: 0;
+    border: none;
+    outline: 0;
+    background-color: transparent;
+    box-shadow: 0 0 0 #0035e480;
+    transition-duration: 0.4s;
+    transition-timing-function: ease;
+    font-size: 14px;
+    flex-grow: 1;
 }
 
-#items .itemElement span {
-    margin-left: auto;
-    margin-left: 5px;
+#items .itemElement .itemElementText:focus {
+    box-shadow: 0 3px 0 #0035e480;
 }
 
-.button {
-    margin-left: auto;
-    background-color: #e25555;
-    border-radius: 50%;
-    padding: 6px;
-    width: 13px;
-    height: 13px;
+#items .itemElement .itemElementDelete {
+    margin-left: 20px;
 }
 
-/* Footer */
+/*========================= FOOTER =========================*/
 
 #footersvg {
     position: absolute;

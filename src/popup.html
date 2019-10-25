@@ -8,40 +8,55 @@
     <link rel="stylesheet" href="main.css" />
   </head>
 
-  <body class="tabs">
-    <section id="intro">
-      <h1>Wheel it turn ?</h1>
-      <!-- Add logo animation & load data here -->
-    </section>
+  <body class="app">
+    <div class="main">
+      <section id="intro">
+        <h1>Wheel it turn ?</h1>
+      </section>
 
-    <section id="tabs">
-      <h2>Add a tab</h2>
-      <div class="tabContainer">
+      <section id="tabs">
+        <nav class="nav">
+          <svg class="navArrow" data-redirection="intro" viewBox="0 0 52.29 96.23">
+            <path
+              d="M1.2,45.2L45.2,1.2c1.6-1.6,4.3-1.6,5.9,0l0,0c1.6,1.6,1.6,4.3,0,5.9l-41,41l41,41c1.6,1.6,1.6,4.3,0,5.9l0,0
+	c-1.6,1.6-4.3,1.6-5.9,0L1.2,51.1C-0.4,49.4-0.4,46.8,1.2,45.2z"
+            />
+          </svg>
+          <div class="navTitle">Add a Wheel</div>
+        </nav>
+        <div class="tabContainer">
           <div class="tabElement">Restaurant de midi</div>
-      </div>
-      <div id="addTab"> Ajout item</div>
-    </section>
-
-    <section id="main">
-      <div id="winner">The winner is <span>Item 3 !</span></div>
-
-      <div id="wheel"></div>
-
-      <nav id="items">
-        <div class="itemElement">
-          <div>Nom de l'élément</div>
-          <span>o</span>
         </div>
-        <svg id="addItem" class="button" viewBox="0 0 20 20">
-          <path
-            d="M14.613,10c0,0.23-0.188,0.419-0.419,0.419H10.42v3.774c0,0.23-0.189,0.42-0.42,0.42s-0.419-0.189-0.419-0.42v-3.774H5.806c-0.23,0-0.419-0.189-0.419-0.419s0.189-0.419,0.419-0.419h3.775V5.806c0-0.23,0.189-0.419,0.419-0.419s0.42,0.189,0.42,0.419v3.775h3.774C14.425,9.581,14.613,9.77,14.613,10 M17.969,10c0,4.401-3.567,7.969-7.969,7.969c-4.402,0-7.969-3.567-7.969-7.969c0-4.402,3.567-7.969,7.969-7.969C14.401,2.031,17.969,5.598,17.969,10 M17.13,10c0-3.932-3.198-7.13-7.13-7.13S2.87,6.068,2.87,10c0,3.933,3.198,7.13,7.13,7.13S17.13,13.933,17.13,10"
-          ></path>
-        </svg>
-        <section class="settings"></section>
-      </nav>
-    </section>
+        <div id="addTab">Ajout item</div>
+      </section>
 
-<!--     <svg id="footersvg" viewBox="0 0 100 40">
+      <section id="app">
+        <nav class="nav">
+          <svg class="navArrow" data-redirection="tabs" viewBox="0 0 52.29 96.23">
+            <path
+              d="M1.2,45.2L45.2,1.2c1.6-1.6,4.3-1.6,5.9,0l0,0c1.6,1.6,1.6,4.3,0,5.9l-41,41l41,41c1.6,1.6,1.6,4.3,0,5.9l0,0
+      c-1.6,1.6-4.3,1.6-5.9,0L1.2,51.1C-0.4,49.4-0.4,46.8,1.2,45.2z"
+            />
+          </svg>
+          <div class="navTitle">Add a Wheel</div>
+        </nav>
+        <div id="winner">The winner is <span>Item 3 !</span></div>
+        <div id="wheel"></div>
+        <div id="items">
+          <div class="itemElement">
+            <div class="itemElementColor"></div>
+            <input class="itemElementText" type="text">
+            <span class="itemElementDelete">o</span>
+          </div>
+          <div class="itemElement">
+              <div class="itemElementColor"></div>
+              <input class="itemElementText" type="text">
+              <span class="itemElementDelete">o</span>
+            </div>
+        </div>
+      </section>
+
+      <!--     <svg id="footersvg" viewBox="0 0 100 40">
       <path
         d="M -5 20 Q 0 15 5 20 Q 10 25 15 20 Q 20 15 25 20 Q 30 25 35 20 Q 40 15 45 20 Q 50 25 55 20 Q 60 15 65 20 Q 70 25 75 20 Q 80 15 85 20 Q 90 25 95 20 Q 100 15 105 20 V 40 H 0 Z"
       />
@@ -53,7 +68,9 @@
       </a>
       <p>Made with <span id="heart">&#9829;</span> by Elliot</p>
     </footer> -->
+    </div>
 
     <script src="scripts/main.js"></script>
+    <script src="scripts/app.js"></script>
   </body>
 </html>
