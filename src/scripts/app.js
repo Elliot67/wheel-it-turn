@@ -68,6 +68,7 @@ let addTabDestination = document.getElementsByClassName('tabContainer')[0];
 addTabButton.addEventListener('click', function () {
     if (tabsId.length < MAX_TABS) {
         tabs.push(new Tab('Première tab', '#A1F3E5'));
+        // ajouter un event listener au click pour pouvoir cliquer dessus
     }
 });
 

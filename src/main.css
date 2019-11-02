@@ -10,8 +10,8 @@ body {
 /* MAIN */
 
 .main {
-    height: 380px;
-    width: 280px;
+    height: 390px;
+    width: 290px;
     margin: auto;
     background-color: white;
     border-radius: 15px;
@@ -32,7 +32,7 @@ body {
     border-bottom-right-radius: 15px;
 }
 
-section{
+section {
     width: 280px;
 }
 
@@ -81,7 +81,26 @@ body.app #intro, body.app #tabs {
 /*========================= INTRO =========================*/
 
 #intro {
-    background-color: red;
+    height: 375px;
+    cursor: pointer;
+}
+
+.intro-continue {
+    animation-name: blink;
+    animation-duration: 1.5s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 /*========================= TABS =========================*/
@@ -142,18 +161,14 @@ body.app #intro, body.app #tabs {
     align-items: center;
     width: 100%;
     padding: 6px 10px;
-    background-color: #dadada;
-}
-
-#items .itemElement:nth-child(2n) {
-    background-color: #c8c8c8;
+    margin-bottom: 2px;
 }
 
 #items .itemElement .itemElementColor {
     height: 100%;
     width: 15px;
     background-color: purple;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 #items .itemElement .itemElementText {
@@ -163,7 +178,7 @@ body.app #intro, body.app #tabs {
     border: none;
     outline: 0;
     background-color: transparent;
-    box-shadow: 0 0 0 #0035e480;
+    box-shadow: 0 0 0 #587bee, inset 0 -1px 0 #587bee;
     transition-duration: 0.4s;
     transition-timing-function: ease;
     font-size: 14px;
@@ -171,7 +186,7 @@ body.app #intro, body.app #tabs {
 }
 
 #items .itemElement .itemElementText:focus {
-    box-shadow: 0 3px 0 #0035e480;
+    box-shadow: 0 3px 0 #587bee, inset 0 0 0 #587bee;
 }
 
 #items .itemElement .itemElementDelete {
@@ -181,16 +196,12 @@ body.app #intro, body.app #tabs {
 /*========================= FOOTER =========================*/
 
 #footersvg {
-    position: absolute;
-    bottom: 0;
     transform: translateZ(0);
     fill: #7189f0;
     z-index: 5;
 }
 
-footer {
-    position: absolute;
-    bottom: 5px;
+.gitHub {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -198,20 +209,20 @@ footer {
     z-index: 20;
 }
 
-footer>* {
+.gitHub>* {
     margin: 2px;
 }
 
-footer a {
+.gitHub a {
     color: black;
     display: flex;
 }
 
-footer a p {
+.gitHub a p {
     margin: 0;
 }
 
-footer a img {
+.gitHub a img {
     height: 15px;
     margin-right: 5px;
 }
