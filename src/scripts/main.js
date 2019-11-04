@@ -19,15 +19,19 @@ document.getElementById('intro').addEventListener('click', () => {
 let tabElements = document.getElementsByClassName('tabContainer')[0].children;
 for (let i = 0; i < tabElements.length; i++) {
     tabElements[i].addEventListener('click', (obj) => {
-        let currentTab = obj.target.getAttribute('data-tabId');
-        body.setAttribute('class', 'app');
-        console.log('redirection avec :' + currentTab);
+        let selectedTab = obj.target.getAttribute('data-tabId');
+        navigateToTab(selectedTab);
     });
+}
+
+function navigateToTab(selectedTab){
+    body.setAttribute('class', 'app');
+    console.log('redirection avec :' + selectedTab);
 }
 
 /*========================= INTRO =========================*/
 
 gitHubLink.addEventListener('click', () => {
-    chrome.tabs.create({ url: "https://github.com/Elliot67/HigherOrLower" });
+    chrome.tabs.create({ url: "https://github.com/Elliot67/wheel-it-turn" });
     event.preventDefault();
 });
