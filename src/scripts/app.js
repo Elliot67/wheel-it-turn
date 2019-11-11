@@ -1,31 +1,81 @@
+/*========================= NAVIGATION =========================*/
+
+// Arrows
+const body = document.querySelector('body');
+let arrows = document.getElementsByClassName('navArrow');
+for (let i = 0; i < arrows.length; i++) {
+    arrows[i].addEventListener('click', (obj) => {
+        let redirection = obj.target.getAttribute('data-redirection');
+        body.setAttribute('class', redirection);
+    });
+}
+
+// Intro
+document.getElementById('intro').addEventListener('click', () => {
+    body.setAttribute('class', 'tabs');
+});
+
+
+function navigateToTab(selectedTab){
+    // remove Items
+    let itemsToRemove = itemsContainer.querySelectorAll(".itemElement:not(#itemInput)");
+    for(let itemToRemove of itemsToRemove){
+        itemsContainer.removeChild(itemToRemove);
+    }
+    // load new Items
+    let clickedTab = tabs.filter(obj => obj.tabId == selectedTab)[0];
+    for(itemToAdd of clickedTab.items){
+        console.log(itemToAdd);
+        itemToAdd.createElement(true);
+    }
+    // redirect
+    body.setAttribute('class', 'app');
+    document.getElementById('app').setAttribute('data-tabId', selectedTab);
+    console.log('Tab utilisée : ' + selectedTab);
+}
+
+/*========================= INTRO =========================*/
+
+gitHubLink.addEventListener('click', () => {
+    chrome.tabs.create({ url: "https://github.com/Elliot67/wheel-it-turn" });
+    event.preventDefault();
+});
+
+
 /*========================= APP =========================*/
 
 class Tab {
-    constructor(name, color) {
+    constructor(name, colorTheme) {
         this.tabId;
-        this.colorTheme;
+        this.colorTheme = colorTheme;
         this.name = name;
-        this.color = color;
-        this.itemsId = [];
         this.items = [];
         this.createTabId();
         this.createElement();
     }
 
     createTabId() {
-        let id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 9)).toUpperCase();
-        console.log('tab' + id);
+        let id;
+        do {
+            id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 9)).toUpperCase();
+        } while (tabs.filter(obj => obj.tabId == id)[0] != undefined)
         this.tabId = id;
     }
 
     createElement() {
-        addTabDestination.insertAdjacentHTML('beforeEnd', '<div class="tabElement" style="background-color: ' + this.color + '" data-tabId="' + this.tabId + '">' + this.name + '</div>');
-        let tab = document.querySelector("[data-tabId='" + this.tabId + "']");
-        console.log("TRUC" + tab);
-        tab.addEventListener('click', (obj) => {
+        let tabTemplate = `<div class="tabElement" data-tabId="${this.tabId}">
+        <div class="tabElementColor" style="background-color: ${this.colorTheme};"></div>
+        <input class="tabElementText" type="text" value="${this.name}"/>
+        <span class="tabElementDelete">o</span>
+        </div>`;
+        tabInput.insertAdjacentHTML('beforebegin', tabTemplate);
+        let tabElement = document.querySelector("[data-tabId='" + this.tabId + "']");
+        tabElement.addEventListener('click', (obj) => {
             let selectedTab = obj.target.getAttribute('data-tabId');
-            navigateToTab(selectedTab);
+            console.log(obj.target);
+            navigateToTab(selectedTab); //TODO: FIXME: Mettre uniquement flèche à droite cliquable pour aller sur l'app
         });
+        console.log('CREATION TAB ' + this.tabId);
     }
 
     addItem(name, color) {
@@ -33,10 +83,8 @@ class Tab {
     }
 }
 
-
 class Item {
     constructor(tab, name, color) {
-        console.log(tab);
         this.tab = tab;
         this.itemId;
         this.name = name;
@@ -48,65 +96,71 @@ class Item {
     createItemdId() {
         let id;
         do {
-            id = Math.floor(Math.random() * MAX_ITEMS);
-        } while (this.tab.itemsId.includes(id))
-        console.log('item: ' + id);
+            id = (Date.now().toString(36) + Math.random().toString(36).substr(2, 9)).toUpperCase();
+        } while (this.tab.items.filter(obj => obj.itemId == id)[0] != undefined)
         this.itemId = id;
-        this.tab.itemsId.push(this.itemId);
     }
 
-    createElement() {
-        let itemInput = document.getElementById('itemInput');
-        itemInput.querySelector('.itemElementColor').style.backgroundColor = "red"; //TODO: Adapter la couleur avec le thème de la tab
-        itemInput.querySelector('.itemElementText').value = "";
+    createElement(alreadyCreated = false) {
+        if(!alreadyCreated){
+            itemInput.querySelector('.itemElementColor').style.backgroundColor = colorThemes[this.tab.colorTheme][1][this.tab.colorTheme.length]; //TODO: Faire autrement
+        }
         let itemTemplate = `<div class="itemElement" data-itemId="${this.itemId}">
 <div class="itemElementColor" style="background-color: ${this.color};"></div>
 <input class="itemElementText" type="text" value="${this.name}"/>
 <span class="itemElementDelete">o</span>
 </div>`;
         itemInput.insertAdjacentHTML('beforebegin', itemTemplate);
+        console.log('CREATION ITEM ' + this.itemId + ' pour ' + this.tab.tabId);
     }
 }
 
+/*========================= MANAGE TABS =========================*/
 
-// Manage Tabs
-const MAX_TABS = 100;
+//Trouver une tab -> utilisé filter(obj => obj.tabId == idRecherché)
 let tabs = [];
+const MAX_TABS = 100;
 const colorThemes = {
-    'premier': ["00868b", "c4cd3e", "b2513f", "004e64", "00a5cf"],
-    'deuxieme': ["247ba0", "70c1b3", "b2dbbf", "f3ffbd", "ff1654"]
+    'rgb(128, 0, 128)': ["rgb(128, 0, 128)", ["#00868b", "#c4cd3e", "#b2513f", "#004e64", "#00a5cf"]],
+    'default': ["rgb(128, 0, 128)", ["#00868b", "#c4cd3e", "#b2513f", "#004e64", "#00a5cf"]],
+    '#00868b': ["#00868b", ["#00868b", "#c4cd3e", "#b2513f", "#004e64", "#00a5cf"]],
+    '#247ba0': ["#247ba0", ["#247ba0", "#70c1b3", "#b2dbbf", "#f3ffbd", "#ff1654"]]
 };
 
-let addTabButton = document.getElementById('addTab');
-let addTabDestination = document.getElementsByClassName('tabContainer')[0];
-addTabButton.addEventListener('click', function () {
-    if (tabs.length < MAX_TABS) {
-        tabs.push(new Tab('Première tab', '#A1F3E5'));
+// ADD TAB
+const tabInput = document.getElementById('tabInput');
+const tabInputColorTheme = tabInput.querySelector('div');
+const tabInputName = tabInput.querySelector('input');
+
+tabInputName.addEventListener('keypress', (e) => {
+    if (e.keyCode === 13 && tabs.length < MAX_TABS) {
+        let name = tabInputName.value;
+        let colorTheme = getComputedStyle(tabInputColorTheme, null).getPropertyValue( 'background-color' );
+        tabs.push(new Tab(name, colorTheme));
+        tabInputName.value = "";
+        tabInputColorTheme.style.backgroundColor = colorThemes['default'][0];
     }
 });
 
-// Suppression d'une tab -> utilisé filter(obj => obj.tabId == idRecherché) pour trouver la bonne tab
 
+/*========================= MANAGE ITEMS =========================*/
 
-// Manage Items
 const MAX_ITEMS = 100;
-let itemSection = document.getElementById('items');
 
-
-/*========================= ADD ITEM =========================*/
-
+// ADD ITEM
+const itemsContainer = document.getElementById('itemsContainer');
 const itemInput = document.getElementById('itemInput');
 const itemInputColor = itemInput.querySelector('div');
-const ItemInputName = itemInput.querySelector('input');
+const itemInputName = itemInput.querySelector('input');
 //const itemInputActive = itemInput.querySelector('span'); TODO: Plus tard
 
-ItemInputName.addEventListener('keypress', (e) => {
+itemInputName.addEventListener('keypress', (e) => {
     if (e.keyCode === 13) {
-        let name = ItemInputName.value;
-        let color = itemInputColor.style.backgroundColor;
+        let name = itemInputName.value; 
+        let color = getComputedStyle(itemInputColor, null).getPropertyValue( 'background-color' );
         let currentTabId = document.getElementById('app').getAttribute('data-tabId');
         let currentTab = tabs.filter(obj => obj.tabId == currentTabId);
         currentTab[0].addItem(name, color);
-        // Supprimer le texte
+        itemInput.querySelector('.itemElementText').value = ""; // TODO: Reset l'input de base & changer la couleur en fonction du tableau
     }
 });

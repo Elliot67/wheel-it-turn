@@ -105,20 +105,46 @@ body.app #intro, body.app #tabs {
 
 /*========================= TABS =========================*/
 
-.tabContainer {
+#tabsContainer {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
 }
 
-.tabElement {
-    text-align: center;
-    margin: 5px auto;
-    padding: 8px 15px;
-    border: solid #5656e9 1px;
-    border-radius: 5px;
-    cursor: pointer;
-    box-sizing: border-box;
+#tabsContainer .tabElement {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 6px 10px;
+    margin-bottom: 2px;
+}
+
+#tabsContainer .tabElement .tabElementColor {
+    height: 100%;
+    width: 15px;
+    background-color: purple;
+    margin-right: 10px;
+}
+
+#tabsContainer .tabElement .tabElementText {
+    display: inline-block;
+    vertical-align: middle;
+    padding: 0;
+    border: none;
+    outline: 0;
+    background-color: transparent;
+    box-shadow: 0 0 0 #587bee, inset 0 -1px 0 #587bee;
     transition-duration: 0.4s;
+    transition-timing-function: ease;
+    font-size: 14px;
+    flex-grow: 1;
+}
+
+#tabsContainer .tabElement .tabElementText:focus {
+    box-shadow: 0 3px 0 #587bee, inset 0 0 0 #587bee;
+}
+
+#tabsContainer .tabElement .tabElementDelete {
+    margin-left: 20px;
 }
 
 .tabElement:hover {
@@ -151,12 +177,12 @@ body.app #intro, body.app #tabs {
     margin-bottom: 20px;
 }
 
-#items {
+#itemsContainer {
     display: flex;
     flex-wrap: wrap;
 }
 
-#items .itemElement {
+#itemsContainer .itemElement {
     display: flex;
     align-items: center;
     width: 100%;
@@ -164,14 +190,14 @@ body.app #intro, body.app #tabs {
     margin-bottom: 2px;
 }
 
-#items .itemElement .itemElementColor {
+#itemsContainer .itemElement .itemElementColor {
     height: 100%;
     width: 15px;
     background-color: purple;
     margin-right: 10px;
 }
 
-#items .itemElement .itemElementText {
+#itemsContainer .itemElement .itemElementText {
     display: inline-block;
     vertical-align: middle;
     padding: 0;
@@ -185,11 +211,11 @@ body.app #intro, body.app #tabs {
     flex-grow: 1;
 }
 
-#items .itemElement .itemElementText:focus {
+#itemsContainer .itemElement .itemElementText:focus {
     box-shadow: 0 3px 0 #587bee, inset 0 0 0 #587bee;
 }
 
-#items .itemElement .itemElementDelete {
+#itemsContainer .itemElement .itemElementDelete {
     margin-left: 20px;
 }
 

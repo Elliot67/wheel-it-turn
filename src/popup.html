@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="main.css" />
   </head>
 
-  <body class="app">
+  <body class="tabs">
     <div class="main">
       <section id="intro">
         <h1>Wheel it turn ?</h1>
@@ -36,12 +36,13 @@
           </svg>
           <div class="navTitle">Add a Wheel</div>
         </nav>
-        <div class="tabContainer">
-          <div data-tabId="premiere" class="tabElement">Restaurant de midi</div>
-          <div data-tabId="deuxieme" class="tabElement">Restaurant du soir</div>
-          <div data-tabId="troisieme" class="tabElement">Restaurant du dimanche</div>
+        <div id="tabsContainer">
+          <div class="tabElement" id="tabInput">
+            <div class="tabElementColor"></div>
+            <input class="tabElementText" type="text" autofocus/>
+            <span class="tabElementDelete">o</span>
+          </div>
         </div>
-        <div id="addTab">Ajout item</div>
       </section>
 
       <section id="app" data-tabId="">
@@ -56,11 +57,11 @@
       c-1.6,1.6-4.3,1.6-5.9,0L1.2,51.1C-0.4,49.4-0.4,46.8,1.2,45.2z"
             />
           </svg>
-          <div class="navTitle">Add a Wheel</div>
+          <div class="navTitle">Add items</div>
         </nav>
         <div id="winner">The winner is <span>Item 3 !</span></div>
         <div id="wheel"></div>
-        <div id="items">
+        <div id="itemsContainer">
           <div class="itemElement" id="itemInput">
             <div class="itemElementColor"></div>
             <input class="itemElementText" type="text" />
@@ -69,8 +70,6 @@
         </div>
       </section>
     </div>
-
-    <script src="scripts/main.js"></script>
     <script src="scripts/app.js"></script>
   </body>
 </html>
