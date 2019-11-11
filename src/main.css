@@ -195,7 +195,7 @@ body.app #intro, body.app #tabs {
 
 /*========================= FOOTER =========================*/
 
-#footersvg {
+#footersvg { /* TODO: A VERIFIER */
     transform: translateZ(0);
     fill: #7189f0;
     z-index: 5;

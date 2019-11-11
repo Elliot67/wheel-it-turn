@@ -26,6 +26,7 @@ for (let i = 0; i < tabElements.length; i++) {
 
 function navigateToTab(selectedTab){
     body.setAttribute('class', 'app');
+    document.getElementById('app').setAttribute('data-tabId', selectedTab);
     console.log('redirection avec :' + selectedTab);
 }
 

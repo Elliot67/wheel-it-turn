@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="main.css" />
   </head>
 
-  <body class="tabs">
+  <body class="app">
     <div class="main">
       <section id="intro">
         <h1>Wheel it turn ?</h1>
@@ -44,7 +44,7 @@
         <div id="addTab">Ajout item</div>
       </section>
 
-      <section id="app">
+      <section id="app" data-tabId="">
         <nav class="nav">
           <svg
             class="navArrow"
@@ -61,12 +61,7 @@
         <div id="winner">The winner is <span>Item 3 !</span></div>
         <div id="wheel"></div>
         <div id="items">
-          <div class="itemElement">
-            <div class="itemElementColor"></div>
-            <input class="itemElementText" type="text" />
-            <span class="itemElementDelete">o</span>
-          </div>
-          <div class="itemElement">
+          <div class="itemElement" id="itemInput">
             <div class="itemElementColor"></div>
             <input class="itemElementText" type="text" />
             <span class="itemElementDelete">o</span>
