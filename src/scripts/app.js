@@ -16,15 +16,15 @@ document.getElementById('intro').addEventListener('click', () => {
 });
 
 
-function navigateToTab(selectedTab){
+function navigateToTab(selectedTab) { // selectedTab: id
     // remove Items
     let itemsToRemove = itemsContainer.querySelectorAll(".itemElement:not(#itemInput)");
-    for(let itemToRemove of itemsToRemove){
+    for (let itemToRemove of itemsToRemove) {
         itemsContainer.removeChild(itemToRemove);
     }
     // load new Items
     let clickedTab = tabs.filter(obj => obj.tabId == selectedTab)[0];
-    for(itemToAdd of clickedTab.items){
+    for (itemToAdd of clickedTab.items) {
         console.log(itemToAdd);
         itemToAdd.createElement(true);
     }
@@ -102,7 +102,7 @@ class Item {
     }
 
     createElement(alreadyCreated = false) {
-        if(!alreadyCreated){
+        if (!alreadyCreated) {
             itemInput.querySelector('.itemElementColor').style.backgroundColor = colorThemes[this.tab.colorTheme][1][this.tab.colorTheme.length]; //TODO: Faire autrement
         }
         let itemTemplate = `<div class="itemElement" data-itemId="${this.itemId}">
@@ -112,6 +112,8 @@ class Item {
 </div>`;
         itemInput.insertAdjacentHTML('beforebegin', itemTemplate);
         console.log('CREATION ITEM ' + this.itemId + ' pour ' + this.tab.tabId);
+
+        // TODO: Ajout EventListener au changement de la valeur de l'input & sauvegarde du nom
     }
 }
 
@@ -135,8 +137,10 @@ const tabInputName = tabInput.querySelector('input');
 tabInputName.addEventListener('keypress', (e) => {
     if (e.keyCode === 13 && tabs.length < MAX_TABS) {
         let name = tabInputName.value;
-        let colorTheme = getComputedStyle(tabInputColorTheme, null).getPropertyValue( 'background-color' );
-        tabs.push(new Tab(name, colorTheme));
+        let colorTheme = getComputedStyle(tabInputColorTheme, null).getPropertyValue('background-color');
+        let newTab = new Tab(name, colorTheme);
+        tabs.push(newTab);
+        navigateToTab(newTab.tabId);
         tabInputName.value = "";
         tabInputColorTheme.style.backgroundColor = colorThemes['default'][0];
     }
@@ -156,11 +160,49 @@ const itemInputName = itemInput.querySelector('input');
 
 itemInputName.addEventListener('keypress', (e) => {
     if (e.keyCode === 13) {
-        let name = itemInputName.value; 
-        let color = getComputedStyle(itemInputColor, null).getPropertyValue( 'background-color' );
+        let name = itemInputName.value;
+        let color = getComputedStyle(itemInputColor, null).getPropertyValue('background-color');
         let currentTabId = document.getElementById('app').getAttribute('data-tabId');
         let currentTab = tabs.filter(obj => obj.tabId == currentTabId);
         currentTab[0].addItem(name, color);
         itemInput.querySelector('.itemElementText').value = ""; // TODO: Reset l'input de base & changer la couleur en fonction du tableau
     }
 });
+
+/*========================= TURN THE WHEEL =========================*/
+
+
+let wheelElement = document.getElementById('wheel');
+wheelElement.addEventListener('click', () => {
+    let selectedTabId = document.getElementById('app').getAttribute('data-tabId');;
+    selectWinner(selectedTabId);
+});
+
+function selectWinner(selectedTabId) {
+    let currentTab = tabs.filter(obj => obj.tabId == selectedTabId)[0];
+    let total = currentTab.items.length;
+    let randomNumber = 0;
+    if (total == 1) { // TODO: Faire un switch case
+        randomNumber = 1;
+    } else {
+        randomNumber = Math.floor(Math.random() * total + 1); //TODO: Vérifier que le random est bien random
+    }
+    if (randomNumber != 0) {
+        turnWheel(randomNumber, total);
+    }
+}
+
+function turnWheel(randomNumber, total) {
+    let minDeg = 360 / total * randomNumber - (360 / total);
+    let maxDeg = 360 / total * randomNumber;
+    console.log(randomNumber, minDeg, maxDeg);
+    if (minDeg + 1 == maxDeg || minDeg + 2 == maxDeg) {
+        let rotation = minDeg;
+    } else {
+        let rotation = minDeg + Math.floor(Math.random * total / 360);
+    }
+    rotation += (Math.floor(Math.random * 5) + 4) * 360;
+    console.log(rotation);
+
+    // CSS things
+}

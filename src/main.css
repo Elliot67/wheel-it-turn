@@ -175,6 +175,8 @@ body.app #intro, body.app #tabs {
     margin: auto;
     background: conic-gradient(red 20%, blue 20%, blue 40%, purple 40%, purple 60%, pink 60%, pink 90%, orange 90%);
     margin-bottom: 20px;
+    cursor: pointer;
+    border-radius: 50%;
 }
 
 #itemsContainer {
