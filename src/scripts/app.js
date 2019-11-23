@@ -182,27 +182,36 @@ function selectWinner(selectedTabId) {
     let currentTab = tabs.filter(obj => obj.tabId == selectedTabId)[0];
     let total = currentTab.items.length;
     let randomNumber = 0;
-    if (total == 1) { // TODO: Faire un switch case
-        randomNumber = 1;
-    } else {
-        randomNumber = Math.floor(Math.random() * total + 1); //TODO: Vérifier que le random est bien random
-    }
-    if (randomNumber != 0) {
-        turnWheel(randomNumber, total);
+    switch (total) {
+        case 0:
+            console.log('No item');
+            break;
+        case 1:
+            randomNumber = 1;
+            rotateWhell((Math.floor(Math.random() * 360))); // [0-360]
+            break;
+        default:
+            randomNumber = Math.floor(Math.random() * (total - 1) + 1); // [1-total]
+            turnWheel(randomNumber, total);
+            break;
     }
 }
 
 function turnWheel(randomNumber, total) {
-    let minDeg = 360 / total * randomNumber - (360 / total);
+    let minDeg = 360 / total * randomNumber - 360 / total;
     let maxDeg = 360 / total * randomNumber;
-    console.log(randomNumber, minDeg, maxDeg);
-    if (minDeg + 1 == maxDeg || minDeg + 2 == maxDeg) {
-        let rotation = minDeg;
-    } else {
-        let rotation = minDeg + Math.floor(Math.random * total / 360);
+    console.log(total, randomNumber, minDeg, maxDeg);
+    if (minDeg != maxDeg || minDeg + 1 != maxDeg) {
+        let rotation = minDeg + Math.floor(Math.random() * (360 / total)); // TODO: Vérifier avec test
+        rotateWhell(rotation)
+    } else{
+        console.log("Too many element on the wheel");
     }
-    rotation += (Math.floor(Math.random * 5) + 4) * 360;
-    console.log(rotation);
+}
 
-    // CSS things
+function rotateWhell(deg){
+
+    deg += (Math.floor(Math.random() * 5) * 360) + 4 * 360; // [0-5] * 360 + 4 * 360
+    console.log('Je tourne la roue de ' + deg);
+
 }
