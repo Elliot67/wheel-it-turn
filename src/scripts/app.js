@@ -188,10 +188,10 @@ function selectWinner(selectedTabId) {
             break;
         case 1:
             randomNumber = 1;
-            rotateWhell((Math.floor(Math.random() * 360))); // [0-360]
+            rotateWhell(Math.floor(Math.random() * (360 + 1))); // [0-360]
             break;
         default:
-            randomNumber = Math.floor(Math.random() * (total - 1) + 1); // [1-total]
+            randomNumber = Math.floor(Math.random() * total + 1); // [1-total]
             turnWheel(randomNumber, total);
             break;
     }
@@ -202,7 +202,8 @@ function turnWheel(randomNumber, total) {
     let maxDeg = 360 / total * randomNumber;
     console.log(total, randomNumber, minDeg, maxDeg);
     if (minDeg != maxDeg || minDeg + 1 != maxDeg) {
-        let rotation = minDeg + Math.floor(Math.random() * (360 / total)); // TODO: Vérifier avec test
+        let rotation = minDeg + Math.floor(Math.random() * ((360 / total) + 1)); // [0-360/total]
+        console.log(rotation);
         rotateWhell(rotation)
     } else{
         console.log("Too many element on the wheel");
@@ -211,7 +212,7 @@ function turnWheel(randomNumber, total) {
 
 function rotateWhell(deg){
 
-    deg += (Math.floor(Math.random() * 5) * 360) + 4 * 360; // [0-5] * 360 + 4 * 360
+    deg += 360 * ((Math.floor(Math.random() * 5)) + 4); // [1440-2880]
     console.log('Je tourne la roue de ' + deg);
 
 }
