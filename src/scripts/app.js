@@ -173,9 +173,17 @@ itemInputName.addEventListener('keypress', (e) => {
 
 
 let wheelElement = document.getElementById('wheel');
+let wheelRunning = false;
+let currentRotation = 0;
 wheelElement.addEventListener('click', () => {
-    let selectedTabId = document.getElementById('app').getAttribute('data-tabId');;
-    selectWinner(selectedTabId);
+    if(!wheelRunning){
+        wheelRunning = true;
+        let selectedTabId = document.getElementById('app').getAttribute('data-tabId');;
+        selectWinner(selectedTabId);
+    } else{
+        console.log('ALREADY RUNNING');
+        // TODO: Message -> the wheel is already running
+    }
 });
 
 function selectWinner(selectedTabId) {
@@ -185,6 +193,7 @@ function selectWinner(selectedTabId) {
     switch (total) {
         case 0:
             console.log('No item');
+            wheelRunning = false;
             break;
         case 1:
             randomNumber = 1;
@@ -200,19 +209,31 @@ function selectWinner(selectedTabId) {
 function turnWheel(randomNumber, total) {
     let minDeg = 360 / total * randomNumber - 360 / total;
     let maxDeg = 360 / total * randomNumber;
-    console.log(total, randomNumber, minDeg, maxDeg);
     if (minDeg != maxDeg || minDeg + 1 != maxDeg) {
         let rotation = minDeg + Math.floor(Math.random() * ((360 / total) + 1)); // [0-360/total]
-        console.log(rotation);
-        rotateWhell(rotation)
+        console.log(total, randomNumber, minDeg, maxDeg, rotation);
+        rotateWhell(rotation);
     } else{
         console.log("Too many element on the wheel");
     }
 }
 
-function rotateWhell(deg){
+function rotateWhell(rotation){
+    rotation += 360 * ((Math.floor(Math.random() * 5)) + 4); // [1440-2880] Between 4 to 8 turn
 
-    deg += 360 * ((Math.floor(Math.random() * 5)) + 4); // [1440-2880]
-    console.log('Je tourne la roue de ' + deg);
+    const animation = wheelElement.animate([ // FIXME: ANIMATION NOT WORKING PROPERLY !( problem with negative numbers)
+        { transform: `rotate(-${currentRotation}deg)` },
+        { transform: `rotate(-${rotation}deg)` }
+      ], { 
+        easing: "cubic-bezier(0.35,0.39,0.46,1)",
+        duration: 4000,
+        iterations: 1,
+        fill: "forwards"
+      });
 
+      animation.onfinish = function() {
+        console.log("END OF ANIMATION");
+        currentRotation = rotation % 360;
+        wheelRunning = false;
+      };
 }
