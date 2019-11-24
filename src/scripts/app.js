@@ -80,7 +80,28 @@ class Tab {
 
     addItem(name, color) {
         this.items.push(new Item(this, name, color));
+        this.updateWheelColors();
     }
+
+    updateWheelColors(){
+        let totalItems = this.items.length;
+        let background = "conic-gradient(" ;
+        let currentRotation = 0;
+        for (let i = 0; i < totalItems; i++) {
+            console.log(currentRotation);
+            background += this.items[i].color + " " + currentRotation + "%, ";
+            background += this.items[i].color + " " + (100/totalItems + currentRotation) + "%";
+            currentRotation += 100/totalItems;
+            if(i + 1!= totalItems){
+                background += ", ";
+            } else{
+                background += ")"
+            }
+        }
+        wheelElement.style.background = background;
+        console.log("NOUVEAU BACKGROUND " + background);
+    }
+
 }
 
 class Item {
@@ -112,6 +133,10 @@ class Item {
 </div>`;
         itemInput.insertAdjacentHTML('beforebegin', itemTemplate);
         console.log('CREATION ITEM ' + this.itemId + ' pour ' + this.tab.tabId);
+
+        //let background = getComputedStyle(wheelElement, null).getPropertyValue('background');
+        //let gradientRegex = "~conic-gradient\((.*)\)~"; MAY BE USEFULL FOR A NEXT TIME
+        //let colorsRegex = "~rgb\([0-9, ]+\)[0-9% ]+~";
 
         // TODO: Ajout EventListener au changement de la valeur de l'input & sauvegarde du nom
     }
@@ -197,7 +222,7 @@ function selectWinner(selectedTabId) {
             break;
         case 1:
             randomNumber = 1;
-            rotateWhell(Math.floor(Math.random() * (360 + 1))); // [0-360]
+            rotateWheel(Math.floor(Math.random() * (360 + 1))); // [0-360]
             break;
         default:
             randomNumber = Math.floor(Math.random() * total + 1); // [1-total]
@@ -212,16 +237,16 @@ function turnWheel(randomNumber, total) {
     if (minDeg != maxDeg || minDeg + 1 != maxDeg) {
         let rotation = minDeg + Math.floor(Math.random() * ((360 / total) + 1)); // [0-360/total]
         console.log(total, randomNumber, minDeg, maxDeg, rotation);
-        rotateWhell(rotation);
+        rotateWheel(rotation);
     } else{
         console.log("Too many element on the wheel");
     }
 }
 
-function rotateWhell(rotation){
+function rotateWheel(rotation){
     rotation += 360 * ((Math.floor(Math.random() * 5)) + 4); // [1440-2880] Between 4 to 8 turn
 
-    const animation = wheelElement.animate([ // FIXME: ANIMATION NOT WORKING PROPERLY !( problem with negative numbers)
+    const animation = wheelElement.animate([
         { transform: `rotate(-${currentRotation}deg)` },
         { transform: `rotate(-${rotation}deg)` }
       ], { 

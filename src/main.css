@@ -173,7 +173,7 @@ body.app #intro, body.app #tabs {
     width: 230px;
     border-radius: 50%;
     margin: auto;
-    background: conic-gradient(red 20%, blue 20%, blue 40%, purple 40%, purple 60%, pink 60%, pink 80%, orange 80%);
+    background: conic-gradient(red 33%, blue 33%, blue 66%, green 66%);
     margin-bottom: 20px;
     cursor: pointer;
     border-radius: 50%;
