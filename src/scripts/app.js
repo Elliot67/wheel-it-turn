@@ -144,7 +144,7 @@ class Item {
 
 /*========================= MANAGE TABS =========================*/
 
-//Trouver une tab -> utilisé filter(obj => obj.tabId == idRecherché)
+//Tips: Pour trouver une tab -> utilisé filter(obj => obj.tabId == idRecherché)
 let tabs = [];
 const MAX_TABS = 100;
 const colorThemes = {
@@ -262,3 +262,23 @@ function rotateWheel(rotation){
         wheelRunning = false;
       };
 }
+
+
+/*========================= STORE THE DATA =========================*/
+
+function saveData(){
+    let data = JSON.stringify(tabs);
+    console.log(data);
+	chrome.storage.sync.set({ wheel_data: data }, () => console.log("Data has been saved"));
+}
+
+new Promise((resolve) => {
+    chrome.storage.sync.get(['wheel_data'], function (result) {
+        resolve(result.wheel_data);
+    });
+}).then((data) => {
+    console.log('Data has been imported');
+    console.log(data);
+    //tabs = JSON.parse(data);
+    //TODO: Ajouter les élements en fonction de l'app
+});
