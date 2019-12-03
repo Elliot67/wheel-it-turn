@@ -27,6 +27,7 @@ function navigateToTab(selectedTab) { // selectedTab: id
     for (itemToAdd of clickedTab.items) {
         console.log(itemToAdd);
         itemToAdd.createElement(true);
+        clickedTab.updateWheelColors();
     }
     // redirect
     body.setAttribute('class', 'app');
