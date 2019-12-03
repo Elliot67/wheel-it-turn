@@ -34,6 +34,7 @@ function navigateToTab(selectedTab) { // selectedTab: id
     console.log('Tab utilisée : ' + selectedTab);
 }
 
+
 /*========================= INTRO =========================*/
 
 gitHubLink.addEventListener('click', () => {
@@ -105,13 +106,15 @@ class Tab {
 }
 
 class Item {
-    constructor(tab, name, color) {
+    constructor(tab, name, color, generation = false) {
         this.tab = tab;
         this.itemId;
         this.name = name;
         this.color = color;
         this.createItemdId();
-        this.createElement();
+        if(!generation){
+            this.createElement();
+        }
     }
 
     createItemdId() {
@@ -141,6 +144,7 @@ class Item {
         // TODO: Ajout EventListener au changement de la valeur de l'input & sauvegarde du nom
     }
 }
+
 
 /*========================= MANAGE TABS =========================*/
 
@@ -194,8 +198,8 @@ itemInputName.addEventListener('keypress', (e) => {
     }
 });
 
-/*========================= TURN THE WHEEL =========================*/
 
+/*========================= TURN THE WHEEL =========================*/
 
 let wheelElement = document.getElementById('wheel');
 let wheelRunning = false;
@@ -264,11 +268,31 @@ function rotateWheel(rotation){
 }
 
 
-/*========================= STORE THE DATA =========================*/
+/*========================= SAVE AND LOAD THE DATA =========================*/
 
 function saveData(){
-    let data = JSON.stringify(tabs);
+    let data = [];
+    for (let i = 0; i < tabs.length; i++) {
+        let tab = {
+            name: tabs[i].name,
+            colorTheme: tabs[i].colorTheme
+        };
+        let items = []
+        for (let j = 0; j < tabs[i].items.length; j++) {
+            let item = {
+                name: tabs[i].items[j].name,
+                color: tabs[i].items[j].color
+            }
+            items.push(item);
+        }
+        group = {
+            tab: tab,
+            items: items
+        }
+        data.push(group);
+    }
     console.log(data);
+    data = JSON.stringify(data);
 	chrome.storage.sync.set({ wheel_data: data }, () => console.log("Data has been saved"));
 }
 
@@ -277,8 +301,16 @@ new Promise((resolve) => {
         resolve(result.wheel_data);
     });
 }).then((data) => {
-    console.log('Data has been imported');
+    data = JSON.parse(data);
     console.log(data);
-    //tabs = JSON.parse(data);
-    //TODO: Ajouter les élements en fonction de l'app
+    for(group of data){
+        console.log(group);
+        let newTab = new Tab(group.tab.name, group.tab.colorTheme);
+        tabs.push(newTab);
+        console.log(tabs);
+        for(item of group.items){
+            newTab.items.push(new Item(newTab, item.name, item.color, true));
+        }
+    }
+    console.log('Data has been imported');
 });
