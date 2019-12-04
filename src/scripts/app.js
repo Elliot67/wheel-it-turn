@@ -50,7 +50,7 @@ class Tab {
     constructor(name, colorTheme) {
         this.tabId;
         this.colorTheme = colorTheme;
-        this.name = name;
+        this.name = escape(name);
         this.items = [];
         this.createTabId();
         this.createElement();
@@ -110,7 +110,7 @@ class Item {
     constructor(tab, name, color, generation = false) {
         this.tab = tab;
         this.itemId;
-        this.name = name;
+        this.name = escape(name);
         this.color = color;
         this.createItemdId();
         if(!generation){
@@ -137,10 +137,6 @@ class Item {
 </div>`;
         itemInput.insertAdjacentHTML('beforebegin', itemTemplate);
         console.log('CREATION ITEM ' + this.itemId + ' pour ' + this.tab.tabId);
-
-        //let background = getComputedStyle(wheelElement, null).getPropertyValue('background');
-        //let gradientRegex = "~conic-gradient\((.*)\)~"; MAY BE USEFULL FOR A NEXT TIME
-        //let colorsRegex = "~rgb\([0-9, ]+\)[0-9% ]+~";
 
         // TODO: Ajout EventListener au changement de la valeur de l'input & sauvegarde du nom
     }
@@ -315,3 +311,23 @@ new Promise((resolve) => {
     }
     console.log('Data has been imported');
 });
+
+
+/*========================= USEFULL =========================*/
+
+function escape(text) {
+    var map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;',
+      "'": '&#39;',
+      "=": '&#61;',
+      "{": '&#123;',
+      "}": "&#125;",
+      "|": '&#124;',
+      "\\": '&#92;'
+    };
+    return text.replace(/[&<>"''={}|\\]/g, function(m) { return map[m]; });
+  }
