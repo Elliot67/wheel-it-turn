@@ -72,10 +72,17 @@ class Tab {
         </div>`;
         tabInput.insertAdjacentHTML('beforebegin', tabTemplate);
         let tabElement = document.querySelector("[data-tabId='" + this.tabId + "']");
-        tabElement.addEventListener('click', (obj) => {
+        tabElement.addEventListener('click', (obj) => { //TODO: FIXME: Mettre uniquement flèche à droite cliquable pour aller sur l'app
             let selectedTab = obj.target.getAttribute('data-tabId');
             console.log(obj.target);
-            navigateToTab(selectedTab); //TODO: FIXME: Mettre uniquement flèche à droite cliquable pour aller sur l'app
+            navigateToTab(selectedTab);
+        });
+
+        const tabNameElement = document.querySelector('[data-tabId=' + this.tabId + '] .tabElementText');
+        tabNameElement.addEventListener('input', () => {
+            this.name = escape(tabNameElement.value);
+            saveData();
+            console.log('saving data');
         });
         console.log('CREATION TAB ' + this.tabId);
     }
@@ -90,7 +97,6 @@ class Tab {
         let background = "conic-gradient(" ;
         let currentRotation = 0;
         for (let i = 0; i < totalItems; i++) {
-            console.log(currentRotation);
             background += this.items[i].color + " " + currentRotation + "%, ";
             background += this.items[i].color + " " + (100/totalItems + currentRotation) + "%";
             currentRotation += 100/totalItems;
@@ -136,9 +142,13 @@ class Item {
 <span class="itemElementDelete">o</span>
 </div>`;
         itemInput.insertAdjacentHTML('beforebegin', itemTemplate);
+        const itemNameElement = document.querySelector('[data-itemId=' + this.itemId + '] .itemElementText');
+        itemNameElement.addEventListener('input', () => {
+            this.name = escape(itemNameElement.value);
+            saveData();
+            console.log('saving data');
+        });
         console.log('CREATION ITEM ' + this.itemId + ' pour ' + this.tab.tabId);
-
-        // TODO: Ajout EventListener au changement de la valeur de l'input & sauvegarde du nom
     }
 }
 
@@ -182,7 +192,6 @@ const itemsContainer = document.getElementById('itemsContainer');
 const itemInput = document.getElementById('itemInput');
 const itemInputColor = itemInput.querySelector('div');
 const itemInputName = itemInput.querySelector('input');
-//const itemInputActive = itemInput.querySelector('span'); TODO: Plus tard
 
 itemInputName.addEventListener('keypress', (e) => {
     if (e.keyCode === 13) {
@@ -301,10 +310,8 @@ new Promise((resolve) => {
     data = JSON.parse(data);
     console.log(data);
     for(group of data){
-        console.log(group);
         let newTab = new Tab(group.tab.name, group.tab.colorTheme);
         tabs.push(newTab);
-        console.log(tabs);
         for(item of group.items){
             newTab.items.push(new Item(newTab, item.name, item.color, true));
         }
@@ -317,17 +324,12 @@ new Promise((resolve) => {
 
 function escape(text) {
     var map = {
-      '&': '&amp;',
-      '<': '&lt;',
-      '>': '&gt;',
       '"': '&quot;',
       "'": '&#039;',
       "'": '&#39;',
-      "=": '&#61;',
       "{": '&#123;',
       "}": "&#125;",
-      "|": '&#124;',
       "\\": '&#92;'
     };
-    return text.replace(/[&<>"''={}|\\]/g, function(m) { return map[m]; });
+    return text.replace(/["''{}\\]/g, function(m) { return map[m]; });
   }
