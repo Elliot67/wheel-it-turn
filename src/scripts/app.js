@@ -26,7 +26,7 @@ function navigateToTab(selectedTab) { // selectedTab: id
     let clickedTab = tabs.filter(obj => obj.tabId == selectedTab)[0];
     for (itemToAdd of clickedTab.items) {
         console.log(itemToAdd);
-        itemToAdd.createElement(true);
+        itemToAdd.createElement();
         clickedTab.updateWheelColors();
     }
     // redirect
@@ -47,13 +47,16 @@ gitHubLink.addEventListener('click', () => {
 /*========================= APP =========================*/
 
 class Tab {
-    constructor(name, colorTheme) {
+    constructor(name, startColor, endColor) {
         this.tabId;
-        this.colorTheme = colorTheme;
         this.name = escape(name);
+        this.startColor = startColor;
+        this.endColor = endColor;
+        this.palette;
         this.items = [];
         this.createTabId();
         this.createElement();
+        this.updateColorPalette();
     }
 
     createTabId() {
@@ -64,15 +67,15 @@ class Tab {
         this.tabId = id;
     }
 
-    createElement() {
+    createElement() { //FIXME: Changer le startColor en dessous
         let tabTemplate = `<div class="tabElement" data-tabId="${this.tabId}">
-        <div class="tabElementColor" style="background-color: ${this.colorTheme};"></div>
+        <div class="tabElementColor" style="background-color: ${this.startColor};"></div>
         <input class="tabElementText" type="text" value="${this.name}"/>
         <span class="tabElementDelete">o</span>
         </div>`;
         tabInput.insertAdjacentHTML('beforebegin', tabTemplate);
         let tabElement = document.querySelector("[data-tabId='" + this.tabId + "']");
-        tabElement.addEventListener('click', (obj) => { //TODO: FIXME: Mettre uniquement flèche à droite cliquable pour aller sur l'app
+        tabElement.addEventListener('click', (obj) => { //TODO: Mettre uniquement flèche à droite cliquable pour aller sur l'app
             let selectedTab = obj.target.getAttribute('data-tabId');
             console.log(obj.target);
             navigateToTab(selectedTab);
@@ -87,8 +90,11 @@ class Tab {
         console.log('CREATION TAB ' + this.tabId);
     }
 
-    addItem(name, color) {
-        this.items.push(new Item(this, name, color));
+    addItem(name) {
+        this.items.push(new Item(this, name));
+        this.updateColorPalette();
+        console.log(this.palette);
+        this.updateItemsColor();
         this.updateWheelColors();
     }
 
@@ -107,17 +113,53 @@ class Tab {
             }
         }
         wheelElement.style.background = background;
-        console.log("NOUVEAU BACKGROUND " + background);
+        console.log("ACTUALISATION DE LA ROUE");
+    }
+
+    updateColorPalette(){
+        if(this.items.length > 2){
+            this.palette = [];
+            this.palette.push(`rgb(${this.startColor.r}, ${this.startColor.g}, ${this.startColor.b})`);
+    
+            let red = Math.round((this.endColor.r - this.startColor.r) / this.items.length);
+            let green = Math.round((this.endColor.g - this.startColor.g) / this.items.length);
+            let blue = Math.round((this.endColor.b - this.startColor.b) / this.items.length);
+
+            let intermediateColor = Object.create(this.startColor);
+            for (let i = 0; i < this.items.length - 2; i++) {
+                intermediateColor.r += red;
+                intermediateColor.g += green;
+                intermediateColor.b += blue;
+        
+              this.palette.push(`rgb(${intermediateColor.r}, ${intermediateColor.g}, ${intermediateColor.b})`);
+              console.log(intermediateColor);
+            }
+        
+            this.palette.push(`rgb(${endColor.r}, ${endColor.g}, ${endColor.b})`);
+        } else if(this.items.length == 1){
+            this.palette = [
+                `rgb(${this.startColor.r}, ${this.startColor.g}, ${this.startColor.b})`,
+                `rgb(${this.endColor.r}, ${this.endColor.g}, ${this.endColor.b})`
+            ];
+        }
+    }
+
+    updateItemsColor(){
+        let itemsColors = document.querySelectorAll('.itemElementColor');
+        for (let i = 0; i < this.items.length; i++) {
+            this.items[i].color = this.palette[i];
+            itemsColors[i].style.backgroundColor = this.palette[i];
+        }
     }
 
 }
 
 class Item {
-    constructor(tab, name, color, generation = false) {
+    constructor(tab, name, generation = false) {
         this.tab = tab;
         this.itemId;
         this.name = escape(name);
-        this.color = color;
+        this.color;
         this.createItemdId();
         if(!generation){
             this.createElement();
@@ -132,12 +174,9 @@ class Item {
         this.itemId = id;
     }
 
-    createElement(alreadyCreated = false) {
-        if (!alreadyCreated) {
-            itemInput.querySelector('.itemElementColor').style.backgroundColor = colorThemes[this.tab.colorTheme][1][this.tab.colorTheme.length]; //TODO: Faire autrement
-        }
+    createElement() {
         let itemTemplate = `<div class="itemElement" data-itemId="${this.itemId}">
-<div class="itemElementColor" style="background-color: ${this.color};"></div>
+<div class="itemElementColor"></div>
 <input class="itemElementText" type="text" value="${this.name}"/>
 <span class="itemElementDelete">o</span>
 </div>`;
@@ -158,12 +197,16 @@ class Item {
 //Tips: Pour trouver une tab -> utilisé filter(obj => obj.tabId == idRecherché)
 let tabs = [];
 const MAX_TABS = 100;
-const colorThemes = {
-    'rgb(128, 0, 128)': ["rgb(128, 0, 128)", ["#00868b", "#c4cd3e", "#b2513f", "#004e64", "#00a5cf"]],
-    'default': ["rgb(128, 0, 128)", ["#00868b", "#c4cd3e", "#b2513f", "#004e64", "#00a5cf"]],
-    '#00868b': ["#00868b", ["#00868b", "#c4cd3e", "#b2513f", "#004e64", "#00a5cf"]],
-    '#247ba0': ["#247ba0", ["#247ba0", "#70c1b3", "#b2dbbf", "#f3ffbd", "#ff1654"]]
-};
+const startColor = {
+    r: 255,
+    g: 0,
+    b: 0
+}
+const endColor = {
+    r: 0,
+    g: 255,
+    b: 0
+}
 
 // ADD TAB
 const tabInput = document.getElementById('tabInput');
@@ -173,12 +216,10 @@ const tabInputName = tabInput.querySelector('input');
 tabInputName.addEventListener('keypress', (e) => {
     if (e.keyCode === 13 && tabs.length < MAX_TABS) {
         let name = tabInputName.value;
-        let colorTheme = getComputedStyle(tabInputColorTheme, null).getPropertyValue('background-color');
-        let newTab = new Tab(name, colorTheme);
+        let newTab = new Tab(name, startColor, endColor);
         tabs.push(newTab);
         navigateToTab(newTab.tabId);
         tabInputName.value = "";
-        tabInputColorTheme.style.backgroundColor = colorThemes['default'][0];
     }
 });
 
@@ -196,10 +237,9 @@ const itemInputName = itemInput.querySelector('input');
 itemInputName.addEventListener('keypress', (e) => {
     if (e.keyCode === 13) {
         let name = itemInputName.value;
-        let color = getComputedStyle(itemInputColor, null).getPropertyValue('background-color');
         let currentTabId = document.getElementById('app').getAttribute('data-tabId');
         let currentTab = tabs.filter(obj => obj.tabId == currentTabId);
-        currentTab[0].addItem(name, color);
+        currentTab[0].addItem(name); // FIXME: Changer la couleur
         itemInput.querySelector('.itemElementText').value = ""; // TODO: Reset l'input de base & changer la couleur en fonction du tableau
     }
 });
@@ -281,7 +321,8 @@ function saveData(){
     for (let i = 0; i < tabs.length; i++) {
         let tab = {
             name: tabs[i].name,
-            colorTheme: tabs[i].colorTheme
+            startColor: tabs[i].startColor,
+            endColor: tabs[i].endColor,
         };
         let items = []
         for (let j = 0; j < tabs[i].items.length; j++) {
@@ -307,16 +348,18 @@ new Promise((resolve) => {
         resolve(result.wheel_data);
     });
 }).then((data) => {
-    data = JSON.parse(data);
-    console.log(data);
-    for(group of data){
-        let newTab = new Tab(group.tab.name, group.tab.colorTheme);
-        tabs.push(newTab);
-        for(item of group.items){
-            newTab.items.push(new Item(newTab, item.name, item.color, true));
+    if(data != "" && data != undefined){
+        data = JSON.parse(data);
+        console.log(data);
+        for(group of data){
+            let newTab = new Tab(group.tab.name, group.tab.startColor, group.tab.endColor);
+            tabs.push(newTab);
+            for(item of group.items){
+                newTab.items.push(new Item(newTab, item.name, true)); // FIXME: paramètre generation ? & il faut actualiser les couleurs
+            }
         }
+        console.log('Data has been imported');
     }
-    console.log('Data has been imported');
 });
 
 
