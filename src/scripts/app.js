@@ -25,14 +25,13 @@ function navigateToTab(selectedTab) { // selectedTab: id
     // load new Items
     let clickedTab = tabs.filter(obj => obj.tabId == selectedTab)[0];
     for (itemToAdd of clickedTab.items) {
-        console.log(itemToAdd);
         itemToAdd.createElement();
         clickedTab.updateWheelColors();
     }
     // redirect
     body.setAttribute('class', 'app');
     document.getElementById('app').setAttribute('data-tabId', selectedTab);
-    console.log('Tab utilisée : ' + selectedTab);
+    console.log('%c[TAB]', 'color: #d8d342', 'going to ' + selectedTab);
 }
 
 
@@ -77,7 +76,7 @@ class Tab {
         let tabElement = document.querySelector("[data-tabId='" + this.tabId + "']");
         tabElement.addEventListener('click', (obj) => { //TODO: Mettre uniquement flèche à droite cliquable pour aller sur l'app
             let selectedTab = obj.target.getAttribute('data-tabId');
-            console.log(obj.target);
+            console.log('%c[TAB]', 'color: #d8d342', 'selected tab ' + selectedTab);
             navigateToTab(selectedTab);
         });
 
@@ -85,9 +84,8 @@ class Tab {
         tabNameElement.addEventListener('input', () => {
             this.name = escape(tabNameElement.value);
             saveData();
-            console.log('saving data');
         });
-        console.log('CREATION TAB ' + this.tabId);
+        console.log('%c[TAB]', 'color: #d8d342', 'creating tab ' + this.tabId);
     }
 
     addItem(name) {
@@ -113,7 +111,7 @@ class Tab {
             }
         }
         wheelElement.style.background = background;
-        console.log("ACTUALISATION DE LA ROUE");
+        console.log('%c[UPDATE]', 'color: #4293d8', 'wheel update');
     }
 
     updateColorPalette(){
@@ -132,7 +130,6 @@ class Tab {
                 intermediateColor.b += blue;
         
               this.palette.push(`rgb(${intermediateColor.r}, ${intermediateColor.g}, ${intermediateColor.b})`);
-              console.log(intermediateColor);
             }
         
             this.palette.push(`rgb(${endColor.r}, ${endColor.g}, ${endColor.b})`);
@@ -185,9 +182,8 @@ class Item {
         itemNameElement.addEventListener('input', () => {
             this.name = escape(itemNameElement.value);
             saveData();
-            console.log('saving data');
         });
-        console.log('CREATION ITEM ' + this.itemId + ' pour ' + this.tab.tabId);
+        console.log('%c[ITEM]', 'color: #42d889', 'new item ' + this.itemId);
     }
 }
 
@@ -256,7 +252,7 @@ wheelElement.addEventListener('click', () => {
         let selectedTabId = document.getElementById('app').getAttribute('data-tabId');;
         selectWinner(selectedTabId);
     } else{
-        console.log('ALREADY RUNNING');
+        console.log('%c[WHEEL]', 'color: #d84242', 'already running');
         // TODO: Message -> the wheel is already running
     }
 });
@@ -267,7 +263,7 @@ function selectWinner(selectedTabId) {
     let randomNumber = 0;
     switch (total) {
         case 0:
-            console.log('No item');
+            console.log('%c[WHEEL]', 'color: #d84242', 'no items');
             wheelRunning = false;
             break;
         case 1:
@@ -286,10 +282,10 @@ function turnWheel(randomNumber, total) {
     let maxDeg = 360 / total * randomNumber;
     if (minDeg != maxDeg || minDeg + 1 != maxDeg) {
         let rotation = minDeg + Math.floor(Math.random() * ((360 / total) + 1)); // [0-360/total]
-        console.log(total, randomNumber, minDeg, maxDeg, rotation);
+        console.log('%c[WHEEL]', 'color: #d84242', 'total: ' + total, 'randomNumber: ' + randomNumber, 'minDeg: ' + minDeg, 'maxDeg: ' + maxDeg, 'rotation: ' + rotation);
         rotateWheel(rotation);
     } else{
-        console.log("Too many element on the wheel");
+        console.log('%c[WHEEL]', 'color: #d84242', 'too many items');
     }
 }
 
@@ -307,7 +303,7 @@ function rotateWheel(rotation){
       });
 
       animation.onfinish = function() {
-        console.log("END OF ANIMATION");
+        console.log('%c[WHEEL]', 'color: #d84242', 'animation finished');
         currentRotation = rotation % 360;
         wheelRunning = false;
       };
@@ -317,6 +313,7 @@ function rotateWheel(rotation){
 /*========================= SAVE AND LOAD THE DATA =========================*/
 
 function saveData(){
+    console.log('%c[DATA]', 'color: #ba42d8', 'saving data');
     let data = [];
     for (let i = 0; i < tabs.length; i++) {
         let tab = {
@@ -338,19 +335,20 @@ function saveData(){
         }
         data.push(group);
     }
-    console.log(data);
+    console.log('%c[DATA]', 'color: #ba42d8', data);
     data = JSON.stringify(data);
-	chrome.storage.sync.set({ wheel_data: data }, () => console.log("Data has been saved"));
+	chrome.storage.sync.set({ wheel_data: data }, () => console.log('%c[DATA]', 'color: #ba42d8', 'data has been saved'));
 }
 
 new Promise((resolve) => {
+    console.log('%c[DATA]', 'color: #ba42d8', 'importing data');
     chrome.storage.sync.get(['wheel_data'], function (result) {
         resolve(result.wheel_data);
     });
 }).then((data) => {
     if(data != "" && data != undefined){
         data = JSON.parse(data);
-        console.log(data);
+        console.log('%c[DATA]', 'color: #ba42d8', data);
         for(group of data){
             let newTab = new Tab(group.tab.name, group.tab.startColor, group.tab.endColor);
             tabs.push(newTab);
@@ -358,7 +356,7 @@ new Promise((resolve) => {
                 newTab.items.push(new Item(newTab, item.name, true)); // FIXME: paramètre generation ? & il faut actualiser les couleurs
             }
         }
-        console.log('Data has been imported');
+        console.log('%c[DATA]', 'color: #ba42d8', 'data has been imported');
     }
 });
 
