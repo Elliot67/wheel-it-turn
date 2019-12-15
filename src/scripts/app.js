@@ -55,6 +55,7 @@ class Tab {
         this.items = [];
         this.createTabId();
         this.createElement();
+        this.updateWheelColors();
         this.updateColorPalette();
     }
 
@@ -66,7 +67,7 @@ class Tab {
         this.tabId = id;
     }
 
-    createElement() { //FIXME: Changer le startColor en dessous
+    createElement() { //FIXME: Ajouter la possibilité de choisir entre plusieurs thèmes de duo de couleurs et le mettre à la place du startColor en dessous
         let tabTemplate = `<div class="tabElement" data-tabId="${this.tabId}">
         <div class="tabElementColor" style="background-color: ${this.startColor};"></div>
         <input class="tabElementText" type="text" value="${this.name}"/>
@@ -88,27 +89,33 @@ class Tab {
         console.log('%c[TAB]', 'color: #d8d342', 'creating tab ' + this.tabId);
     }
 
-    addItem(name) {
-        this.items.push(new Item(this, name));
+    addItem(name, loadingData = false) {
+        this.items.push(new Item(this, name, loadingData));
         this.updateColorPalette();
-        console.log(this.palette);
-        this.updateItemsColor();
+        this.updateItemsColor(loadingData);
         this.updateWheelColors();
+        if(!loadingData){
+            saveData();
+        }
     }
 
     updateWheelColors(){
         let totalItems = this.items.length;
         let background = "conic-gradient(" ;
         let currentRotation = 0;
-        for (let i = 0; i < totalItems; i++) {
-            background += this.items[i].color + " " + currentRotation + "%, ";
-            background += this.items[i].color + " " + (100/totalItems + currentRotation) + "%";
-            currentRotation += 100/totalItems;
-            if(i + 1!= totalItems){
-                background += ", ";
-            } else{
-                background += ")"
+        if(totalItems > 0){
+            for (let i = 0; i < totalItems; i++) {
+                background += this.items[i].color + " " + currentRotation + "%, ";
+                background += this.items[i].color + " " + (100/totalItems + currentRotation) + "%";
+                currentRotation += 100/totalItems;
+                if(i + 1!= totalItems){
+                    background += ", ";
+                } else{
+                    background += ")"
+                }
             }
+        } else {
+            background += `rgb(${this.startColor.r}, ${this.startColor.g}, ${this.startColor.b}) 0%, rgb(${this.startColor.r}, ${this.startColor.g}, ${this.startColor.b}) 100%` + " )";
         }
         wheelElement.style.background = background;
         console.log('%c[UPDATE]', 'color: #4293d8', 'wheel update');
@@ -133,32 +140,35 @@ class Tab {
             }
         
             this.palette.push(`rgb(${endColor.r}, ${endColor.g}, ${endColor.b})`);
-        } else if(this.items.length == 1){
+        } else {
             this.palette = [
                 `rgb(${this.startColor.r}, ${this.startColor.g}, ${this.startColor.b})`,
                 `rgb(${this.endColor.r}, ${this.endColor.g}, ${this.endColor.b})`
             ];
         }
+        console.log('%c[WHEEL]', 'color: #d84242', 'palette updated:', this.palette);
     }
 
-    updateItemsColor(){
+    updateItemsColor(loadingData){
         let itemsColors = document.querySelectorAll('.itemElementColor');
         for (let i = 0; i < this.items.length; i++) {
             this.items[i].color = this.palette[i];
-            itemsColors[i].style.backgroundColor = this.palette[i];
+            if(!loadingData){
+                itemsColors[i].style.backgroundColor = this.palette[i];
+            }
         }
     }
 
 }
 
 class Item {
-    constructor(tab, name, generation = false) {
+    constructor(tab, name, loadingData) {
         this.tab = tab;
         this.itemId;
         this.name = escape(name);
         this.color;
         this.createItemdId();
-        if(!generation){
+        if(!loadingData){
             this.createElement();
         }
     }
@@ -235,8 +245,8 @@ itemInputName.addEventListener('keypress', (e) => {
         let name = itemInputName.value;
         let currentTabId = document.getElementById('app').getAttribute('data-tabId');
         let currentTab = tabs.filter(obj => obj.tabId == currentTabId);
-        currentTab[0].addItem(name); // FIXME: Changer la couleur
-        itemInput.querySelector('.itemElementText').value = ""; // TODO: Reset l'input de base & changer la couleur en fonction du tableau
+        currentTab[0].addItem(name);
+        itemInput.querySelector('.itemElementText').value = ""; // TODO: Remplacer le carré de la couleur par un symbole '+'
     }
 });
 
@@ -324,8 +334,7 @@ function saveData(){
         let items = []
         for (let j = 0; j < tabs[i].items.length; j++) {
             let item = {
-                name: tabs[i].items[j].name,
-                color: tabs[i].items[j].color
+                name: tabs[i].items[j].name
             }
             items.push(item);
         }
@@ -353,7 +362,7 @@ new Promise((resolve) => {
             let newTab = new Tab(group.tab.name, group.tab.startColor, group.tab.endColor);
             tabs.push(newTab);
             for(item of group.items){
-                newTab.items.push(new Item(newTab, item.name, true)); // FIXME: paramètre generation ? & il faut actualiser les couleurs
+                newTab.addItem(item.name, true);
             }
         }
         console.log('%c[DATA]', 'color: #ba42d8', 'data has been imported');
