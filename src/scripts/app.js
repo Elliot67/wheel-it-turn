@@ -71,10 +71,11 @@ class Tab {
         let tabTemplate = `<div class="tabElement" data-tabId="${this.tabId}">
         <div class="tabElementColor" style="background-color: ${this.startColor};"></div>
         <input class="tabElementText" type="text" value="${this.name}"/>
-        <span class="tabElementDelete">o</span>
+        <div class="tabElementDelete"><img src="img/delete.svg"></div>
         </div>`;
         tabInput.insertAdjacentHTML('beforebegin', tabTemplate);
-        let tabElement = document.querySelector("[data-tabId='" + this.tabId + "']");
+
+        const tabElement = document.querySelector("[data-tabId='" + this.tabId + "']");
         tabElement.addEventListener('click', (obj) => { //TODO: Mettre uniquement flèche à droite cliquable pour aller sur l'app
             let selectedTab = obj.target.getAttribute('data-tabId');
             console.log('%c[TAB]', 'color: #d8d342', 'selected tab ' + selectedTab);
@@ -86,6 +87,13 @@ class Tab {
             this.name = escape(tabNameElement.value);
             saveData();
         });
+
+        const tabElementDelete = document.querySelector('[data-tabId=' + this.tabId + '] .tabElementDelete');
+        tabElementDelete.addEventListener('click', () => {
+            deleteMe(this.tabId);
+            event.stopPropagation();
+        });
+        
         console.log('%c[TAB]', 'color: #d8d342', 'creating tab ' + this.tabId);
     }
 
@@ -158,7 +166,6 @@ class Tab {
             }
         }
     }
-
 }
 
 class Item {
@@ -183,16 +190,24 @@ class Item {
 
     createElement() {
         let itemTemplate = `<div class="itemElement" data-itemId="${this.itemId}">
-<div class="itemElementColor"></div>
-<input class="itemElementText" type="text" value="${this.name}"/>
-<span class="itemElementDelete">o</span>
-</div>`;
+        <div class="itemElementColor"></div>
+        <input class="itemElementText" type="text" value="${this.name}"/>
+        <div class="itemElementDelete"><img src="img/delete.svg"></div>
+        </div>`;
         itemInput.insertAdjacentHTML('beforebegin', itemTemplate);
+
         const itemNameElement = document.querySelector('[data-itemId=' + this.itemId + '] .itemElementText');
         itemNameElement.addEventListener('input', () => {
             this.name = escape(itemNameElement.value);
             saveData();
         });
+
+        const itemDeleteElement = document.querySelector('[data-itemId=' + this.itemId + '] .itemElementDelete');
+        itemDeleteElement.addEventListener('click', () => {
+            deleteMe(this.tab.tabId, this.itemId);
+            event.stopPropagation();
+        });
+
         console.log('%c[ITEM]', 'color: #42d889', 'new item ' + this.itemId);
     }
 }
@@ -249,6 +264,33 @@ itemInputName.addEventListener('keypress', (e) => {
         itemInput.querySelector('.itemElementText').value = ""; // TODO: Remplacer le carré de la couleur par un symbole '+'
     }
 });
+
+
+/*========================= SAVE AND LOAD THE DATA =========================*/
+
+let deleteRunning = false;
+function deleteMe(tabId, itemId = false){
+    if(!deleteRunning) {
+        deleteRunning = true;
+        const tabIndex = tabs.findIndex(obj => obj.tabId == tabId);
+        if(itemId) {
+            const itemIndex = tabs[tabIndex].items.findIndex(obj => obj.itemId == itemId);
+            tabs[tabIndex].items.splice(itemIndex, 1);
+            const itemElement = document.querySelector('[data-itemId=' + itemId + ']');
+            itemElement.parentNode.removeChild(itemElement);
+            console.log('%c[ITEM]', 'color: #42d889', 'removing item in ' + tabIndex + " : " + itemIndex);
+        } else {
+            tabs.splice(tabIndex, 1);
+            const tabElement = document.querySelector('[data-tabId=' + tabId + ']');
+            tabElement.parentNode.removeChild(tabElement);
+            console.log('%c[TAB]', 'color: #d8d342', 'removing tab in ', tabIndex);
+        }
+        saveData();
+        deleteRunning = false;
+    } else {
+        console.log('%c[DATA]', 'color: #ba42d8', 'currently removing an item');
+    }
+}
 
 
 /*========================= TURN THE WHEEL =========================*/
@@ -323,7 +365,6 @@ function rotateWheel(rotation){
 /*========================= SAVE AND LOAD THE DATA =========================*/
 
 function saveData(){
-    console.log('%c[DATA]', 'color: #ba42d8', 'saving data');
     let data = [];
     for (let i = 0; i < tabs.length; i++) {
         let tab = {
@@ -344,7 +385,7 @@ function saveData(){
         }
         data.push(group);
     }
-    console.log('%c[DATA]', 'color: #ba42d8', data);
+    console.log('%c[DATA]', 'color: #ba42d8', 'saving data',  data);
     data = JSON.stringify(data);
 	chrome.storage.sync.set({ wheel_data: data }, () => console.log('%c[DATA]', 'color: #ba42d8', 'data has been saved'));
 }

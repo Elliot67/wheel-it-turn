@@ -119,10 +119,19 @@ body.app #intro, body.app #tabs {
 }
 
 #tabsContainer .tabElement .tabElementColor {
-    height: 100%;
+    height: 15px;
     width: 15px;
+    border-radius: 50%;
     background-color: purple;
     margin-right: 10px;
+}
+#tabsContainer .tabElement .tabElementAdd {
+    height: 15px;
+    margin-right: 10px;
+}
+
+#tabsContainer .tabElement .tabElementAdd svg {
+    height: 100%;
 }
 
 #tabsContainer .tabElement .tabElementText {
@@ -145,6 +154,14 @@ body.app #intro, body.app #tabs {
 
 #tabsContainer .tabElement .tabElementDelete {
     margin-left: 20px;
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+}
+
+#tabsContainer .tabElement .tabElementDelete img {
+    height: 100%;
+    pointer-events: none;
 }
 
 .tabElement:hover {
@@ -193,10 +210,21 @@ body.app #intro, body.app #tabs {
 }
 
 #itemsContainer .itemElement .itemElementColor {
-    height: 100%;
+    height: 15px;
     width: 15px;
+    border-radius: 50%;
     background-color: purple;
     margin-right: 10px;
+}
+
+#itemsContainer .itemElement .itemElementAdd {
+    height: 15px;
+    width: 15px;
+    margin-right: 10px;
+}
+
+#itemsContainer .itemElement .itemElementAdd svg {
+    height: 100%;
 }
 
 #itemsContainer .itemElement .itemElementText {
@@ -219,11 +247,20 @@ body.app #intro, body.app #tabs {
 
 #itemsContainer .itemElement .itemElementDelete {
     margin-left: 20px;
+    height: 15px;
+    width: 15px;
+    cursor: pointer;
+}
+
+#itemsContainer .itemElement .itemElementDelete img {
+    height: 100%;
+    pointer-events: none;
 }
 
 /*========================= FOOTER =========================*/
 
-#footersvg { /* TODO: A VERIFIER */
+#footersvg {
+    /* TODO: A VERIFIER */
     transform: translateZ(0);
     fill: #7189f0;
     z-index: 5;
